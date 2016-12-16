@@ -1,30 +1,60 @@
 const http = require('http')
 const fs = require('fs')
-const server = http.createServer((request, response) => {
 
-    var fileUrl = request.url;
-    if (fileUrl == "/") { fileUrl = "/index.html"};
+function FileSuffix(filename) {
+    return filename.substr(filename.lastIndexOf("."));
+}
 
-    fs.readFile("." + fileUrl, (err, data) => {
+function CleanFileName(filename) {
+    if (filename == "/") 
+        return "/index.html"
+    else
+        return filename
+}
+
+function ContentType(suffix) {
+
+    var contentType = 'text/plain';
+    
+    switch (suffix)
+    {
+        case "ico":
+            contentType = 'image/x-icon';
+            break;
+        case "htm":
+        case "html":
+            contentType = 'text/html';
+            break;
+    }
+    return contentType;
+}
+
+function ReadServerFile(filename, callback) {
+    fs.readFile("." + filename, (err, data) => {
         if (err) {
             if (err.errno == -4058) {
-                response.writeHead(404, {'Content-Type':'text/html'});
-                response.end("<body>Page not found.</body>");
+                responseCode = 404;
+                data = "<body>Page not found.</body>";
+                callback(responseCode, data);
             }
             console.log(err);
         }
-
-        var suffix = fileUrl.substr(fileUrl.length - 4);
-
-        var contentType = 'text/html';
-        switch (suffix){
-            case ".ico":
-                contentType = 'image/x-icon';
-                break;
+        else {
+            callback(200, data);
         }
-        console.log("Requested: " + request.url);
-        response.writeHead(200, {'Content-Type': contentType});
+    });
+}
+
+const server = http.createServer((request, response) => {
+
+    var fileUrl = CleanFileName(request.url);
+
+    ReadServerFile(fileUrl, (responseCode, data) => {
+       
+        response.writeHead(responseCode, ContentType(FileSuffix(fileUrl)));
         response.end(data);
-    })   
+        console.log("Requested: " + request.url);
+    })
+
 })
 server.listen(8000)
