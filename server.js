@@ -1,7 +1,11 @@
 const http = require('http')
 const fs = require('fs')
 const server = http.createServer((request, response) => {
-    fs.readFile("." + request.url, (err, data) => {
+
+    var fileUrl = request.url;
+    if (fileUrl == "/") { fileUrl = "/index.html"};
+
+    fs.readFile("." + fileUrl, (err, data) => {
         if (err) {
             if (err.errno == -4058) {
                 response.writeHead(404, {'Content-Type':'text/html'});
@@ -10,7 +14,7 @@ const server = http.createServer((request, response) => {
             console.log(err);
         }
 
-        var suffix = request.url.substr(request.url.length - 4);
+        var suffix = fileUrl.substr(fileUrl.length - 4);
 
         var contentType = 'text/html';
         switch (suffix){
