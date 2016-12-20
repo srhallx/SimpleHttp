@@ -1,0 +1,23 @@
+{
+  "name": "simplehttp",
+  "version": "1.0.0",
+  "description": "demo rest api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srhallx/SimpleHttp.git"
+  },
+  "author": "Steve Hall",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/srhallx/SimpleHttp/issues"
+  },
+  "homepage": "https://github.com/srhallx/SimpleHttp#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
